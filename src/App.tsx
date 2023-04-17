@@ -3,11 +3,9 @@ import ArticlesPage from "./pages/ArticlesPage";
 
 function App() {
   return (
-    <div>
-      <Routes>
-        <Route path="/" element={<ArticlesPage />} />
-      </Routes>
-    </div>
+    <Routes>
+      <Route path="/" element={<ArticlesPage />} />
+    </Routes>
   );
 }
 

@@ -16,7 +16,7 @@ export default function ArticlesPage() {
   if (isLoading) return <Hourglass />;
   if (error) return <div>{error.message}</div>;
   return (
-    <MenuList>
+    <MenuList className="w-screen">
       {articles!.map((article) => {
         return <ArticleListItem key={article.article_id} article={article} />;
       })}

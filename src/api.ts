@@ -9,7 +9,7 @@ export type Article = {
   topic: string;
   author: string;
   body: string;
-  created_at: number;
+  created_at: string;
   votes: number;
   article_img_url: string;
   article_id: number;
