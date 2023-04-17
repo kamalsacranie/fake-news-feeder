@@ -1,1 +1,1 @@
-![Rough plan](./rough-plan.png)
+![Rough plan](./rough-plan.svg)
