@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { Hourglass, MenuList } from "react95";
+import { useEffect } from "react";
+import { Hourglass, MenuList, ScrollView } from "react95";
 import { Article, getArticles } from "../api";
 import ArticleListItem from "../components/ArticleListItem";
 
@@ -12,6 +13,11 @@ export default function ArticlesPage() {
     queryKey: ["articlesData"],
     queryFn: getArticles,
   });
+
+  useEffect(() => {
+    const scrollPos = sessionStorage.getItem("scrollPosition");
+    window.scrollTo(0, parseInt(scrollPos || "0"));
+  }, []);
 
   if (isLoading) return <Hourglass />;
   if (error) return <div>{error.message}</div>;

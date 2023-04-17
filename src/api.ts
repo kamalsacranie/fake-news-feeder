@@ -21,6 +21,12 @@ export async function getArticles() {
   } = await api.get<{ articles: Article[] }>("/articles");
   return articles;
 }
+export async function getArticle(articleId: string) {
+  const {
+    data: { article },
+  } = await api.get<{ article: Article }>(`/articles/${articleId}`);
+  return article;
+}
 
 export type User = {
   username: string;
