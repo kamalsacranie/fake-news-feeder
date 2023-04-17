@@ -16,6 +16,20 @@ export type Article = {
   comment_count: string;
 };
 export async function getArticles() {
-  const { data } = await api.get<Article[]>("/articles");
-  return data;
+  const {
+    data: { articles },
+  } = await api.get<{ articles: Article[] }>("/articles");
+  return articles;
+}
+
+export type User = {
+  username: string;
+  name: string;
+  avatar_url?: string;
+};
+export async function getUser(username: string) {
+  const {
+    data: { user },
+  } = await api.get<{ user: User }>(`/users/${username}`);
+  return user;
 }

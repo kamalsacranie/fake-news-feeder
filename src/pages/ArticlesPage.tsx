@@ -1,29 +1,25 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Hourglass, MenuList } from "react95";
 import { Article, getArticles } from "../api";
+import ArticleListItem from "../components/ArticleListItem";
 
 export default function ArticlesPage() {
-  const [loading, setLoading] = useState<boolean>(true);
-  const [articles, setArticles] = useState<Article[]>();
-  const [error, setError] = useState<Error>();
-
-  useEffect(() => {
-    setLoading(true);
-    getArticles()
-      .then((articles) => {
-        console.log(articles);
-        setArticles(articles);
-        setLoading(false);
-      })
-      .catch((error: Error) => setError(error));
+  const {
+    isLoading,
+    error,
+    data: articles,
+  } = useQuery<Article[], Error>({
+    queryKey: ["articlesData"],
+    queryFn: getArticles,
   });
 
-  if (loading) return <div>loading...</div>;
+  if (isLoading) return <Hourglass />;
   if (error) return <div>{error.message}</div>;
   return (
-    <div>
-      {articles.map((article) => {
-        return <div>{article.title}</div>;
+    <MenuList>
+      {articles!.map((article) => {
+        return <ArticleListItem key={article.article_id} article={article} />;
       })}
-    </div>
+    </MenuList>
   );
 }
