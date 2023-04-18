@@ -1,7 +1,7 @@
 import { GrFormClose } from "react-icons/gr";
 import { FaSortAmountUpAlt } from "react-icons/fa";
 import { BiCommentDetail } from "react-icons/bi";
-import { ImInfo } from "react-icons/im";
+import { ImInfo, ImArrowUp, ImArrowDown } from "react-icons/im";
 import { Button } from "react95";
 import React, {
   EventHandler,
@@ -13,18 +13,27 @@ import React, {
 type IconButtonProps = PropsWithChildren & {
   size?: number;
   onClick?: EventHandler<SyntheticEvent>;
+  color?: string;
 };
-const IconButtonWrapper = ({ children, size, onClick }: IconButtonProps) => {
+const IconButtonWrapper = ({
+  children,
+  size,
+  color,
+  onClick,
+}: IconButtonProps) => {
   return (
     <Button className="h-9 w-9" variant="default" onClick={onClick}>
-      {React.cloneElement(children as ReactElement, { size })}
+      {React.cloneElement(children as ReactElement, {
+        size,
+        color,
+      })}
     </Button>
   );
 };
 
-export const CloseButton = ({ size }: IconButtonProps) => {
+export const CloseButton = (props: IconButtonProps) => {
   return (
-    <IconButtonWrapper size={size}>
+    <IconButtonWrapper {...props}>
       <GrFormClose />
     </IconButtonWrapper>
   );
@@ -50,6 +59,17 @@ export const CommentButton = (props: IconButtonProps) => {
   return (
     <IconButtonWrapper {...props}>
       <BiCommentDetail />
+    </IconButtonWrapper>
+  );
+};
+
+export const VoteButton = ({
+  direction,
+  ...props // conflicted if the readability is worth a memCopy
+}: IconButtonProps & { direction: "up" | "down" }) => {
+  return (
+    <IconButtonWrapper {...props}>
+      {direction === "up" ? <ImArrowUp /> : <ImArrowDown />}
     </IconButtonWrapper>
   );
 };

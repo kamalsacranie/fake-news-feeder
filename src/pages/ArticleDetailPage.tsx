@@ -1,15 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
-import { WindowHeader, Window, ScrollView, Frame, Hourglass } from "react95";
+import { useLocation, useParams } from "react-router-dom";
+import { Window, ScrollView, Frame, Hourglass } from "react95";
 import { Article, getArticle } from "../api";
 import {
-  CloseButton,
   CommentButton,
   InformationButton,
   MaximiseButton,
 } from "../components/Buttons";
 import dateformat from "dateformat";
+import CommentOverlay from "../components/CommentOverlay";
+import { WindowBar } from "../components/WindowBar";
 
 const ArticleInfoItem = ({
   label,
@@ -42,33 +43,6 @@ export default () => {
   const [articleInfo, setArticleInfo] = useState(false);
   const [showComments, setShowComments] = useState(false);
 
-  // Component using clojure?? blaaaeeeaeah maybe classes was the way...
-  // needs to be heavily refactored, late though
-  const StatusBar = () => {
-    return (
-      <WindowHeader className="flex justify-between items-center h-12">
-        <div className="font-bold">Reading time... 🤓</div>
-        <div className="flex items-center">
-          <CommentButton
-            size={20}
-            onClick={() => setShowComments(!showComments)}
-          />
-          <InformationButton
-            size={20}
-            onClick={() => setArticleInfo(!articleInfo)}
-          />
-          <MaximiseButton
-            size={20}
-            onClick={() => setReaderMode(!readerMode)}
-          />
-          <Link to={"/articles"} className="flex items-center">
-            <CloseButton size={90} />
-          </Link>
-        </div>
-      </WindowHeader>
-    );
-  };
-
   const { state }: { state: { article: Article } | null } = useLocation();
   let article = state?.article;
 
@@ -88,8 +62,24 @@ export default () => {
   if (error) return <div>{error.message}</div>;
   if (!article) return <div>{error}</div>;
   return (
-    <Window className="w-full h-screen flex flex-col">
-      <StatusBar />
+    <Window className="w-full h-screen flex flex-col relative">
+      <CommentOverlay
+        article_id={article.article_id}
+        showComments={showComments}
+        setShowComments={setShowComments}
+        hidden={!showComments}
+      />
+      <WindowBar windowTitle="Reading time... 🤓" link={{ link: "/articles" }}>
+        <CommentButton
+          size={20}
+          onClick={() => setShowComments(!showComments)}
+        />
+        <InformationButton
+          size={20}
+          onClick={() => setArticleInfo(!articleInfo)}
+        />
+        <MaximiseButton size={20} onClick={() => setReaderMode(!readerMode)} />
+      </WindowBar>
       <div className={`${readerMode ? "hidden" : "flex"} justify-center`}>
         <Window className="border-8">
           {articleInfo ? (
