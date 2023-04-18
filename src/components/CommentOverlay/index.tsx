@@ -1,9 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useRef } from "react";
 import { Frame, Hourglass, ScrollView } from "react95";
 import styled from "styled-components";
 import { getArticleComments, Comment } from "../../api";
+import { AddCommentButton } from "../Buttons";
 import { WindowBar } from "../WindowBar";
+import AddCommentWindow from "./AddCommentWindow";
 import CommentListItem from "./CommentListItem";
 
 const FrameExtended = styled(Frame)`
@@ -21,6 +23,7 @@ const CommentOverlay = ({
   setShowComments: Dispatch<SetStateAction<boolean>>;
   hidden?: boolean;
 }) => {
+  const commentBox = useRef<HTMLDivElement>(null);
   const {
     isLoading,
     error,
@@ -34,13 +37,24 @@ const CommentOverlay = ({
   if (!comments) return <></>; // we should never do this, it's so typescirpt knows we have comments
   return (
     <div hidden={hidden}>
+      <div ref={commentBox}>
+        <AddCommentWindow />
+      </div>
       <FrameExtended className="absolute left-6 right-6 top-6 bottom-6 z-50 flex flex-col">
         <WindowBar
           windowTitle="Comments"
           callback={() => {
             setShowComments(!showComments);
           }}
-        />
+        >
+          <AddCommentButton
+            size={20}
+            onClick={() => {
+              if (!commentBox.current) return;
+              commentBox.current.hidden = !commentBox.current.hidden;
+            }}
+          />
+        </WindowBar>
         <ScrollView className="overflow-hidden h-full">
           {comments.map((comment) => {
             return (

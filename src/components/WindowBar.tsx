@@ -1,20 +1,27 @@
-import { EventHandler, SyntheticEvent, PropsWithChildren } from "react";
+import React, {
+  EventHandler,
+  SyntheticEvent,
+  PropsWithChildren,
+  PropsWithRef,
+} from "react";
 import { Link } from "react-router-dom";
 import { WindowHeader } from "react95";
 import { CloseButton } from "../components/Buttons";
 
-export const WindowBar = ({
-  windowTitle,
-  children,
-  callback = () => {},
-  link,
-}: PropsWithChildren & {
-  windowTitle: string;
-  callback?: EventHandler<SyntheticEvent>;
-  link?: { link: string; state?: any };
-}) => {
+export const WindowBar = React.forwardRef<
+  HTMLDivElement,
+  PropsWithChildren & {
+    windowTitle: string;
+    className?: string;
+    callback?: EventHandler<SyntheticEvent>;
+    link?: { link: string; state?: any };
+  }
+>(({ windowTitle, children, callback = () => {}, link, className }, ref) => {
   return (
-    <WindowHeader className="flex justify-between items-center h-12">
+    <WindowHeader
+      ref={ref}
+      className={`flex justify-between items-center h-12 ${className}`}
+    >
       <div className="font-bold">{windowTitle}</div>
       <div className="flex items-center">
         {children}
@@ -28,4 +35,4 @@ export const WindowBar = ({
       </div>
     </WindowHeader>
   );
-};
+});

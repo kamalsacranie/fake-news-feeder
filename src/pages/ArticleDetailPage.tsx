@@ -11,6 +11,7 @@ import {
 import dateformat from "dateformat";
 import CommentOverlay from "../components/CommentOverlay";
 import { WindowBar } from "../components/WindowBar";
+import FloatingWindow from "../components/General/FloatingWindow";
 
 const ArticleInfoItem = ({
   label,
