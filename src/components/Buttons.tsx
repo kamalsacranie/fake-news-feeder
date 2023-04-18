@@ -1,5 +1,7 @@
 import { GrFormClose } from "react-icons/gr";
 import { FaSortAmountUpAlt } from "react-icons/fa";
+import { BiCommentDetail } from "react-icons/bi";
+import { ImInfo } from "react-icons/im";
 import { Button } from "react95";
 import React, {
   EventHandler,
@@ -28,10 +30,26 @@ export const CloseButton = ({ size }: IconButtonProps) => {
   );
 };
 
-export const MaximiseButton = ({ size, onClick }: IconButtonProps) => {
+export const MaximiseButton = (props: IconButtonProps) => {
   return (
-    <IconButtonWrapper size={size} onClick={onClick}>
+    <IconButtonWrapper {...props}>
       <FaSortAmountUpAlt />
+    </IconButtonWrapper>
+  );
+};
+
+export const InformationButton = (props: IconButtonProps) => {
+  return (
+    <IconButtonWrapper {...props}>
+      <ImInfo />
+    </IconButtonWrapper>
+  );
+};
+
+export const CommentButton = (props: IconButtonProps) => {
+  return (
+    <IconButtonWrapper {...props}>
+      <BiCommentDetail />
     </IconButtonWrapper>
   );
 };
