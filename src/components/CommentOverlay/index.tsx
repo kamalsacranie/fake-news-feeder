@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Dispatch, SetStateAction, useRef } from "react";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { Frame, Hourglass, ScrollView } from "react95";
 import styled from "styled-components";
 import { getArticleComments, Comment } from "../../api";
@@ -24,6 +24,7 @@ const CommentOverlay = ({
   hidden?: boolean;
 }) => {
   const commentBox = useRef<HTMLDivElement>(null);
+  const [addCommentsVisibilty, setAddCommentsVisibilty] = useState(true);
   const {
     isLoading,
     error,
@@ -32,15 +33,21 @@ const CommentOverlay = ({
     queryKey: ["commentListData"],
     queryFn: () => getArticleComments(article_id),
   });
+
   if (isLoading) return <Hourglass />;
   if (error) return <div>{error.message}</div>;
   if (!comments) return <></>; // we should never do this, it's so typescirpt knows we have comments
+
   return (
     <div hidden={hidden}>
-      <div ref={commentBox}>
-        <AddCommentWindow />
+      <div ref={commentBox} hidden={addCommentsVisibilty} className="absolute">
+        <AddCommentWindow
+          closeButtonCallback={() =>
+            setAddCommentsVisibilty(!addCommentsVisibilty)
+          }
+        />
       </div>
-      <FrameExtended className="absolute left-6 right-6 top-6 bottom-6 z-50 flex flex-col">
+      <FrameExtended className="absolute left-6 right-6 top-6 bottom-6 z-10 flex flex-col">
         <WindowBar
           windowTitle="Comments"
           callback={() => {
@@ -49,10 +56,7 @@ const CommentOverlay = ({
         >
           <AddCommentButton
             size={20}
-            onClick={() => {
-              if (!commentBox.current) return;
-              commentBox.current.hidden = !commentBox.current.hidden;
-            }}
+            onClick={() => setAddCommentsVisibilty(!addCommentsVisibilty)}
           />
         </WindowBar>
         <ScrollView className="overflow-hidden h-full">
