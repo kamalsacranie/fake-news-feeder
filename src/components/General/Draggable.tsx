@@ -15,7 +15,6 @@ export const Draggable = ({ children }: PropsWithChildren) => {
   };
 
   const handleMouseDown: MouseEventHandler<HTMLElement> = (e) => {
-    console.log("cli");
     if (!e.target) return;
     const draggable = getDraggableElement(e.target as HTMLElement);
     if (!draggable) return;
@@ -32,7 +31,6 @@ export const Draggable = ({ children }: PropsWithChildren) => {
     coordinates.current.endY = draggable.offsetTop;
   };
   const handleMouseMove: MouseEventHandler<HTMLElement> = (e) => {
-    console.log("moe");
     if (!e.target) return;
     const draggable = getDraggableElement(e.target as HTMLElement);
     if (!draggable) return;

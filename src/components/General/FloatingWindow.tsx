@@ -1,4 +1,11 @@
-import { EventHandler, PropsWithChildren, ReactNode, SyntheticEvent, useRef, useState } from "react";
+import {
+  EventHandler,
+  PropsWithChildren,
+  ReactNode,
+  SyntheticEvent,
+  useRef,
+  useState,
+} from "react";
 import { WindowBar, WindowBarProps } from "../WindowBar";
 import { WindowContent, Window } from "react95";
 import { Draggable } from "./Draggable";

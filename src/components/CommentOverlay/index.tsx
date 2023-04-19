@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { Frame, Hourglass, ScrollView } from "react95";
 import styled from "styled-components";
@@ -12,6 +12,17 @@ const FrameExtended = styled(Frame)`
   background: ${({ theme }: any) => theme.desktopBackground};
 `;
 
+export function useComments<TData = Comment[]>(
+  article_id: number,
+  options?: UseQueryOptions<Comment[], Error, TData>
+) {
+  return useQuery({
+    queryKey: ["commentListData"],
+    queryFn: () => getArticleComments(article_id),
+    ...options,
+  });
+}
+
 const CommentOverlay = ({
   article_id,
   showComments,
@@ -23,15 +34,15 @@ const CommentOverlay = ({
   setShowComments: Dispatch<SetStateAction<boolean>>;
   hidden?: boolean;
 }) => {
-  const commentBox = useRef<HTMLDivElement>(null);
   const [addCommentsVisibilty, setAddCommentsVisibilty] = useState(true);
+
   const {
     isLoading,
     error,
     data: comments,
-  } = useQuery<Comment[], Error>({
-    queryKey: ["commentListData"],
-    queryFn: () => getArticleComments(article_id),
+  } = useComments<Comment[]>(article_id, {
+    select: (data) => data,
+    notifyOnChangeProps: ["data"],
   });
 
   if (isLoading) return <Hourglass />;
@@ -39,9 +50,10 @@ const CommentOverlay = ({
   if (!comments) return <></>; // we should never do this, it's so typescirpt knows we have comments
 
   return (
-    <div hidden={hidden}>
-      <div ref={commentBox} hidden={addCommentsVisibilty} className="absolute">
+    <div hidden={hidden} className="overflow-hidden">
+      <div hidden={addCommentsVisibilty} className="absolute">
         <AddCommentWindow
+          article_id={article_id}
           closeButtonCallback={() =>
             setAddCommentsVisibilty(!addCommentsVisibilty)
           }
