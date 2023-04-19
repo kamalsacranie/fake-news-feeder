@@ -45,11 +45,17 @@ export type RequestComment = {
   username: User["name"];
   body: string;
 };
+
+type CommentUser = { author: string } | { username: string };
 export type Comment = {
   comment_id: number;
   created_at: string;
   votes: number;
-} & RequestComment;
+  article_id: number;
+  author?: User["name"];
+  username?: User["name"];
+  body: string;
+} & CommentUser;
 export async function postComment(requestComment: RequestComment) {
   const {
     data: { comment },

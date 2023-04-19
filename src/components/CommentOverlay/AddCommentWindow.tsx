@@ -3,7 +3,7 @@ import { Button, TextInput } from "react95";
 import { postComment, RequestComment, Comment } from "../../api";
 import FloatingWindow from "../General/FloatingWindow";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { DivProps } from "../../types";
 import { useComments } from ".";
 
@@ -18,7 +18,7 @@ const AddCommentWindow = (
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm();
+  } = useForm<{ commentBody: string }>();
   const onSubmit = ({ commentBody }: { commentBody: string }) => {
     const requestComment: RequestComment = {
       body: commentBody,
@@ -33,7 +33,7 @@ const AddCommentWindow = (
   const { isLoading, mutate } = useMutation(postComment, {
     onSuccess: (data) => {},
     onMutate: async (newComment) => {
-      await queryClient.cancelQueries(["commentListData"]);
+      await queryClient.cancelQueries(["commentListData"]); // this forces react-query to only send one
 
       // Snapshot the previous value
       const previousComments = queryClient.getQueryData<Comment[]>([
@@ -62,7 +62,7 @@ const AddCommentWindow = (
       alert("there was an error");
     },
     onSettled: () => {
-      queryClient.invalidateQueries();
+      queryClient.invalidateQueries(["commentListData"]);
     },
   });
 
