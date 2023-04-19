@@ -31,8 +31,7 @@ const AddCommentWindow = (
   const queryClient = useQueryClient();
   const { isFetching, ...queryInfo } = useComments(props.article_id);
   const { isLoading, mutate } = useMutation(postComment, {
-    onSuccess: (data) => {
-    },
+    onSuccess: (data) => {},
     onMutate: async (newComment) => {
       await queryClient.cancelQueries(["commentListData"]);
 
@@ -48,7 +47,7 @@ const AddCommentWindow = (
           [
             {
               ...newComment,
-              comment_id: 10001,
+              comment_id: new Date().getTime(),
               created_at: new Date().toISOString(),
               votes: 0,
             },
