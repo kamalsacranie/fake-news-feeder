@@ -22,13 +22,11 @@ const logVote = (voteSessionKey: StorageKeys, elementId: number) => {
 };
 
 export type VoteBoxProps = {
-  votes: number;
   targetId: number;
-  mutate: UseMutateFunction<any, any, any, any>;
+  mutate: UseMutateFunction<any, any, { targetId: number; votes: number }, any>;
   targetSession: StorageKeys;
 };
 export default ({
-  votes,
   targetId,
   mutate,
   targetSession,
@@ -40,7 +38,7 @@ export default ({
 
   const onSubmit = () => {
     logVote(targetSession, targetId);
-    mutate({ targetId: targetId, votes: vote });
+    mutate({ targetId: targetId, votes: vote || 0 });
     setVote(undefined);
   };
 

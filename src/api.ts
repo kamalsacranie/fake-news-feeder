@@ -81,3 +81,12 @@ export async function patchCommentVotes(comment_id: number, inc_votes: number) {
   });
   return comment;
 }
+
+export async function patchArticleVotes(article_id: number, inc_votes: number) {
+  const {
+    data: { article },
+  } = await api.patch<{ article: Article }>(`/articles/${article_id}`, {
+    inc_votes,
+  });
+  return article;
+}
