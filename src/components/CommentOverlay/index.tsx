@@ -48,8 +48,8 @@ const CommentOverlay = ({
   if (!comments) return <></>; // we should never do this, it's so typescirpt knows we have comments
 
   return (
-    <div className="overflow-hidden">
-      <div hidden={addCommentsVisibilty} className="absolute">
+    <>
+      <div hidden={addCommentsVisibilty} className="absolute flex-grow">
         <AddCommentWindow
           article_id={article_id}
           hideWindowCallback={() =>
@@ -77,7 +77,7 @@ const CommentOverlay = ({
           })}
         </ScrollView>
       </FrameExtended>
-    </div>
+    </>
   );
 };
 
