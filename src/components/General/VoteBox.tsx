@@ -1,7 +1,6 @@
 import { UseMutateFunction } from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Button } from "react95";
 import { DivProps, StorageKeys } from "../../types";
 import { getLoggedVotes } from "../../utils/sessionStorage";
 import { VoteButton } from "../Buttons";
@@ -12,8 +11,7 @@ const checkVote = (targetId: number, voteStorageKey: StorageKeys) => {
 };
 
 const logVote = (voteSessionKey: StorageKeys, elementId: number) => {
-  const loggedVotes = getLoggedVotes("commentVotes");
-  console.log(loggedVotes);
+  const loggedVotes = getLoggedVotes(voteSessionKey);
   if (!loggedVotes)
     return sessionStorage.setItem(voteSessionKey, JSON.stringify([elementId]));
   if (loggedVotes.includes(elementId)) return;
@@ -34,7 +32,7 @@ export default ({
   ...props
 }: DivProps & VoteBoxProps) => {
   const { handleSubmit } = useForm();
-  const [vote, setVote] = useState<number>();
+  const [vote, setVote] = useState<1 | -1>();
 
   const onSubmit = () => {
     logVote(targetSession, targetId);

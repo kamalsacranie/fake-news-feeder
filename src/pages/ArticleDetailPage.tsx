@@ -1,8 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { Window, ScrollView, Frame, Hourglass } from "react95";
-import { Article, getArticle } from "../api";
+import { Article, getArticle, patchArticleVotes } from "../api";
 import {
   CommentButton,
   InformationButton,
@@ -11,7 +11,8 @@ import {
 import dateformat from "dateformat";
 import CommentOverlay from "../components/CommentOverlay";
 import { WindowBar } from "../components/WindowBar";
-import FloatingWindow from "../components/General/FloatingWindow";
+import VoteBox from "../components/General/VoteBox";
+import ArticleVoteBox from "../components/ArticleDetail/ArticleVoteBox";
 
 const ArticleInfoItem = ({
   label,
@@ -46,6 +47,31 @@ export default () => {
 
   const { state }: { state: { article: Article } | null } = useLocation();
   let article = state?.article;
+
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation<
+    Article,
+    Error,
+    { targetId: number; votes: number }
+  >({
+    mutationFn: ({ targetId: article_id, votes: inc_votes }) =>
+      patchArticleVotes(article_id, inc_votes),
+    onMutate: async (newData) => {
+      await queryClient.cancelQueries([articleId]);
+      const prevArticle = queryClient.getQueryData<Article>([articleId]);
+      if (prevArticle) {
+        prevArticle.votes += newData.votes;
+        queryClient.setQueryData([articleId], prevArticle);
+      }
+      return prevArticle;
+    },
+    onError: () => {
+      alert("there was an error");
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries([articleId]);
+    },
+  });
 
   let isLoading: boolean = false;
   let error: Error | null = null;
@@ -90,11 +116,20 @@ export default () => {
           {articleInfo ? (
             <ArticleInfo article={article} />
           ) : (
-            <img
-              src={article?.article_img_url}
-              alt=""
-              className="p-2 object-contain max-h-60"
-            />
+            <div className="relative">
+              <img
+                src={article?.article_img_url}
+                alt=""
+                className="p-2 object-contain max-h-60"
+              />
+              <ArticleVoteBox
+                className="flex"
+                votes={article.votes}
+                mutate={mutate}
+                targetId={article.article_id}
+                targetSession="articleVotes"
+              />
+            </div>
           )}
         </Window>
       </div>

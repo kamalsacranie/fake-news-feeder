@@ -14,15 +14,17 @@ type IconButtonProps = PropsWithChildren & {
   size?: number;
   onClick?: EventHandler<SyntheticEvent>;
   color?: string;
+  type?: "button" | "submit" | "reset";
 };
 const IconButtonWrapper = ({
   children,
   size,
   color,
   onClick,
+  type,
 }: IconButtonProps) => {
   return (
-    <Button className="h-9 w-9" variant="default" onClick={onClick}>
+    <Button type={type} className="h-9 w-9" variant="default" onClick={onClick}>
       {React.cloneElement(children as ReactElement, {
         size,
         color,
@@ -65,10 +67,11 @@ export const CommentButton = (props: IconButtonProps) => {
 
 export const VoteButton = ({
   direction,
+  type,
   ...props // conflicted if the readability is worth a memCopy
 }: IconButtonProps & { direction: "up" | "down" }) => {
   return (
-    <IconButtonWrapper {...props}>
+    <IconButtonWrapper type={type} {...props}>
       {direction === "up" ? <ImArrowUp /> : <ImArrowDown />}
     </IconButtonWrapper>
   );
