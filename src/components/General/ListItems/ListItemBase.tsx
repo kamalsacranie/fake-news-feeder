@@ -6,6 +6,7 @@ const ListItemBase = ({
   onClick,
   children,
   windowHeader,
+  className,
 }: DivProps & { windowHeader: ReactElement }) => {
   const [active, setActive] = useState(false);
   const windowHeaderWithProps = React.cloneElement(windowHeader, {
@@ -15,7 +16,7 @@ const ListItemBase = ({
     <>
       <Window
         onClick={onClick}
-        className="block justify-start"
+        className={`block justify-start ${className}`}
         onMouseOver={() => setActive(true)}
         onMouseOut={() => setActive(false)}
       >
