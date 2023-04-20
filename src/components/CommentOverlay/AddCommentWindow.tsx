@@ -1,4 +1,4 @@
-import { EventHandler, SyntheticEvent } from "react";
+import { useEffect } from "react";
 import { Button, TextInput } from "react95";
 import { postComment, RequestComment, Comment } from "../../api";
 import FloatingWindow from "../General/FloatingWindow";
@@ -10,28 +10,25 @@ import { useComments } from ".";
 const AddCommentWindow = (
   props: DivProps & {
     article_id: number;
-    closeButtonCallback?: EventHandler<SyntheticEvent>;
+    hideWindowCallback?: Function;
   }
 ) => {
   const {
     register,
     handleSubmit,
-    watch,
-    formState: { errors },
+    reset,
+    formState: { errors, isSubmitSuccessful },
   } = useForm<{ commentBody: string }>();
-  const onSubmit = ({ commentBody }: { commentBody: string }) => {
-    const requestComment: RequestComment = {
-      body: commentBody,
-      username: "jessjelly",
-      article_id: props.article_id,
-    };
-    mutate(requestComment);
-  };
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset({ commentBody: "" });
+    }
+  }, [isSubmitSuccessful, reset]);
 
   const queryClient = useQueryClient();
   const { isFetching, ...queryInfo } = useComments(props.article_id);
   const { isLoading, mutate } = useMutation(postComment, {
-    onSuccess: (data) => {},
     onMutate: async (newComment) => {
       await queryClient.cancelQueries(["commentListData"]); // this forces react-query to only send one
 
@@ -47,6 +44,7 @@ const AddCommentWindow = (
           [
             {
               ...newComment,
+              author: newComment.username,
               comment_id: new Date().getTime(),
               created_at: new Date().toISOString(),
               votes: 0,
@@ -65,6 +63,16 @@ const AddCommentWindow = (
       queryClient.invalidateQueries(["commentListData"]);
     },
   });
+
+  const onSubmit = ({ commentBody }: { commentBody: string }) => {
+    props.hideWindowCallback!();
+    const requestComment: RequestComment = {
+      body: commentBody,
+      username: "jessjelly",
+      article_id: props.article_id,
+    };
+    mutate(requestComment);
+  };
 
   return (
     <FloatingWindow {...props} windowTitle="Write a comment...">

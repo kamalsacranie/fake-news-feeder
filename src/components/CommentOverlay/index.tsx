@@ -27,12 +27,10 @@ const CommentOverlay = ({
   article_id,
   showComments,
   setShowComments,
-  hidden,
 }: {
   article_id: number;
   showComments: boolean;
   setShowComments: Dispatch<SetStateAction<boolean>>;
-  hidden?: boolean;
 }) => {
   const [addCommentsVisibilty, setAddCommentsVisibilty] = useState(true);
 
@@ -50,11 +48,11 @@ const CommentOverlay = ({
   if (!comments) return <></>; // we should never do this, it's so typescirpt knows we have comments
 
   return (
-    <div hidden={hidden} className="overflow-hidden">
+    <div className="overflow-hidden">
       <div hidden={addCommentsVisibilty} className="absolute">
         <AddCommentWindow
           article_id={article_id}
-          closeButtonCallback={() =>
+          hideWindowCallback={() =>
             setAddCommentsVisibilty(!addCommentsVisibilty)
           }
         />

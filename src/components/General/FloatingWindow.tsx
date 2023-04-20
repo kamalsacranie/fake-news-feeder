@@ -24,14 +24,14 @@ export const Float = (props: DivProps) => {
 export default function FloatingWindow(
   props: WindowBarProps & {
     barButtons?: ReactNode;
-    closeButtonCallback?: EventHandler<SyntheticEvent>;
+    hideWindowCallback?: EventHandler<SyntheticEvent>;
   }
 ) {
   return (
     <Float>
       <Window>
         <Draggable>
-          <WindowBar callback={props.closeButtonCallback} {...props}>
+          <WindowBar callback={props.hideWindowCallback} {...props}>
             {props.barButtons}
           </WindowBar>
         </Draggable>
