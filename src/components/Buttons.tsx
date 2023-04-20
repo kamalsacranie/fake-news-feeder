@@ -1,6 +1,6 @@
 import { GrFormClose } from "react-icons/gr";
 import { FaSortAmountUpAlt } from "react-icons/fa";
-import { BiCommentDetail } from "react-icons/bi";
+import { BiCommentDetail, BiCommentAdd } from "react-icons/bi";
 import { ImInfo, ImArrowUp, ImArrowDown } from "react-icons/im";
 import { Button } from "react95";
 import React, {
@@ -70,6 +70,14 @@ export const VoteButton = ({
   return (
     <IconButtonWrapper {...props}>
       {direction === "up" ? <ImArrowUp /> : <ImArrowDown />}
+    </IconButtonWrapper>
+  );
+};
+
+export const AddCommentButton = (props: IconButtonProps) => {
+  return (
+    <IconButtonWrapper {...props}>
+      <BiCommentAdd />
     </IconButtonWrapper>
   );
 };

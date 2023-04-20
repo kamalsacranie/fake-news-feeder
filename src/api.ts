@@ -40,14 +40,32 @@ export async function getUser(username: string) {
   return user;
 }
 
+export type RequestComment = {
+  article_id: number;
+  username: User["name"];
+  body: string;
+};
+
+type CommentUser = { author: string } | { username: string };
 export type Comment = {
   comment_id: number;
   created_at: string;
-  body: string;
   votes: number;
-  author: User["name"];
   article_id: number;
-};
+  author?: User["name"];
+  username?: User["name"];
+  body: string;
+} & CommentUser;
+export async function postComment(requestComment: RequestComment) {
+  const {
+    data: { comment },
+  } = await api.post<{ comment: Comment }>(
+    `/articles/${requestComment.article_id}/comments`,
+    requestComment
+  );
+  return comment;
+}
+
 export async function getArticleComments(articleId: number) {
   const {
     data: { comments },

@@ -11,6 +11,7 @@ import {
 import dateformat from "dateformat";
 import CommentOverlay from "../components/CommentOverlay";
 import { WindowBar } from "../components/WindowBar";
+import FloatingWindow from "../components/General/FloatingWindow";
 
 const ArticleInfoItem = ({
   label,
@@ -63,12 +64,13 @@ export default () => {
   if (!article) return <div>{error}</div>;
   return (
     <Window className="w-full h-screen flex flex-col relative">
-      <CommentOverlay
-        article_id={article.article_id}
-        showComments={showComments}
-        setShowComments={setShowComments}
-        hidden={!showComments}
-      />
+      {showComments && (
+        <CommentOverlay
+          article_id={article.article_id}
+          showComments={showComments}
+          setShowComments={setShowComments}
+        />
+      )}
       <WindowBar windowTitle="Reading time... 🤓" link={{ link: "/articles" }}>
         <CommentButton
           size={20}
@@ -76,7 +78,10 @@ export default () => {
         />
         <InformationButton
           size={20}
-          onClick={() => setArticleInfo(!articleInfo)}
+          onClick={() => {
+            setReaderMode(false);
+            setArticleInfo(!articleInfo);
+          }}
         />
         <MaximiseButton size={20} onClick={() => setReaderMode(!readerMode)} />
       </WindowBar>
