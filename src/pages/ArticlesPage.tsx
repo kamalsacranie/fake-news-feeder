@@ -1,17 +1,23 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { Hourglass, MenuList, ScrollView } from "react95";
+import { useSearchParams } from "react-router-dom";
+import { Hourglass, MenuList } from "react95";
 import { Article, getArticles } from "../api";
 import ArticleListItem from "../components/ArticleListItem";
 
 export default function ArticlesPage() {
+  const [searchParams] = useSearchParams();
+  const topic = searchParams.get("topic");
+
   const {
     isLoading,
     error,
     data: articles,
   } = useQuery<Article[], Error>({
-    queryKey: ["articlesData"],
-    queryFn: getArticles,
+    queryKey: [`articlesData${topic ? topic : ""}`],
+    queryFn: () => {
+      return getArticles(topic);
+    },
   });
 
   useEffect(() => {
