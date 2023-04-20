@@ -72,3 +72,12 @@ export async function getArticleComments(articleId: number) {
   } = await api.get<{ comments: Comment[] }>(`/articles/${articleId}/comments`);
   return comments;
 }
+
+export async function patchCommentVotes(comment_id: number, inc_votes: number) {
+  const {
+    data: { comment },
+  } = await api.patch<{ comment: Comment }>(`/comments/${comment_id}`, {
+    inc_votes,
+  });
+  return comment;
+}
