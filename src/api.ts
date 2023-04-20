@@ -91,3 +91,14 @@ export async function patchArticleVotes(article_id: number, inc_votes: number) {
   });
   return article;
 }
+
+export type Topic = {
+  slug: string;
+  description: string;
+};
+export async function getTopics() {
+  const {
+    data: { topics },
+  } = await api.get<{ topics: Topic[] }>("/topics");
+  return topics;
+}
