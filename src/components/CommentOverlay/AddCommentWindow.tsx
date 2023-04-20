@@ -1,34 +1,19 @@
-import { useEffect } from "react";
+import { EventHandler, SyntheticEvent, useEffect } from "react";
 import { Button, TextInput } from "react95";
 import { postComment, RequestComment, Comment } from "../../api";
 import FloatingWindow from "../General/FloatingWindow";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  QueryClient,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { DivProps } from "../../types";
 import { useComments } from ".";
 
-const AddCommentWindow = (
-  props: DivProps & {
-    article_id: number;
-    hideWindowCallback?: Function;
-  }
-) => {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors, isSubmitSuccessful },
-  } = useForm<{ commentBody: string }>();
-
-  useEffect(() => {
-    if (isSubmitSuccessful) {
-      reset({ commentBody: "" });
-    }
-  }, [isSubmitSuccessful, reset]);
-
-  const queryClient = useQueryClient();
-  const { isFetching, ...queryInfo } = useComments(props.article_id);
-  const { isLoading, mutate } = useMutation(postComment, {
+const useBaseMutate = (queryClient: QueryClient) => {
+  return useMutation(postComment, {
+    // might have to setCommentList=[] not sure
     onMutate: async (newComment) => {
       await queryClient.cancelQueries(["commentListData"]); // this forces react-query to only send one
 
@@ -63,9 +48,34 @@ const AddCommentWindow = (
       queryClient.invalidateQueries(["commentListData"]);
     },
   });
+};
+
+const AddCommentWindow = ({
+  hideWindowCallback,
+  ...props
+}: DivProps & {
+  article_id: number;
+  hideWindowCallback?: Function;
+}) => {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitSuccessful },
+  } = useForm<{ commentBody: string }>();
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset({ commentBody: "" });
+    }
+  }, [isSubmitSuccessful, reset]);
+
+  const queryClient = useQueryClient();
+  const { isFetching, ...queryInfo } = useComments(props.article_id);
+  const { isLoading, mutate } = useBaseMutate(queryClient);
 
   const onSubmit = ({ commentBody }: { commentBody: string }) => {
-    props.hideWindowCallback!();
+    hideWindowCallback!();
     const requestComment: RequestComment = {
       body: commentBody,
       username: "jessjelly",
@@ -75,7 +85,11 @@ const AddCommentWindow = (
   };
 
   return (
-    <FloatingWindow {...props} windowTitle="Write a comment...">
+    <FloatingWindow
+      hideWindowCallback={hideWindowCallback as EventHandler<SyntheticEvent>}
+      {...props}
+      windowTitle="Write a comment..."
+    >
       <form onSubmit={handleSubmit(onSubmit)}>
         <h2 className="font-lg font-bold">Comment on the article!</h2>
         <TextInput
