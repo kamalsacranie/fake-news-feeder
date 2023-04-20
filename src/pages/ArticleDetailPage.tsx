@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { RefObject, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { Window, ScrollView, Frame, Hourglass } from "react95";
 import { Article, getArticle, patchArticleVotes } from "../api";
@@ -39,7 +39,8 @@ const ArticleInfo = ({ article }: { article: Article }) => {
   );
 };
 
-export default () => {
+export default ({ screenRef }: { screenRef: RefObject<HTMLDivElement> }) => {
+  if (screenRef.current) screenRef.current.style.maxHeight = "10px";
   const { articleId } = useParams();
   const [readerMode, setReaderMode] = useState(false);
   const [articleInfo, setArticleInfo] = useState(false);
@@ -89,7 +90,7 @@ export default () => {
   if (error) return <div>{error.message}</div>;
   if (!article) return <div>{error}</div>;
   return (
-    <Window className="w-full h-screen flex flex-col relative">
+    <Window className="flex flex-col flex-grow relative">
       {showComments && (
         <CommentOverlay
           article_id={article.article_id}
@@ -134,10 +135,10 @@ export default () => {
         </Window>
       </div>
       <div className="text-lg p-2 font-bold">{article?.title}</div>
-      <ScrollView className="overflow-scroll flex-grow flex">
+      <ScrollView className="flex-grow flex flex-col relative overflow-scroll">
         <Frame
           variant="field"
-          className="p-3 min-h-full min-w-full flex-grow"
+          className="p-3 absolute min-h-full min-w-full left-0 top-0"
           shadow={false}
         >
           {article?.body}
