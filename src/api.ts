@@ -2,6 +2,7 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: "https://fake-news-plu0.onrender.com/api",
+  // baseURL: "http://localhost:9090",
 });
 
 export type Article = {
@@ -71,4 +72,22 @@ export async function getArticleComments(articleId: number) {
     data: { comments },
   } = await api.get<{ comments: Comment[] }>(`/articles/${articleId}/comments`);
   return comments;
+}
+
+export async function patchCommentVotes(comment_id: number, inc_votes: number) {
+  const {
+    data: { comment },
+  } = await api.patch<{ comment: Comment }>(`/comments/${comment_id}`, {
+    inc_votes,
+  });
+  return comment;
+}
+
+export async function patchArticleVotes(article_id: number, inc_votes: number) {
+  const {
+    data: { article },
+  } = await api.patch<{ article: Article }>(`/articles/${article_id}`, {
+    inc_votes,
+  });
+  return article;
 }

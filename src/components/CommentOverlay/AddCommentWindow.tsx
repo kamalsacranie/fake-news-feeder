@@ -2,53 +2,11 @@ import { EventHandler, SyntheticEvent, useEffect } from "react";
 import { Button, TextInput } from "react95";
 import { postComment, RequestComment, Comment } from "../../api";
 import FloatingWindow from "../General/FloatingWindow";
-import {
-  QueryClient,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { useQueryClient } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
 import { DivProps } from "../../types";
 import { useComments } from ".";
-
-const useBaseMutate = (queryClient: QueryClient) => {
-  return useMutation(postComment, {
-    // might have to setCommentList=[] not sure
-    onMutate: async (newComment) => {
-      await queryClient.cancelQueries(["commentListData"]); // this forces react-query to only send one
-
-      // Snapshot the previous value
-      const previousComments = queryClient.getQueryData<Comment[]>([
-        "commentListData",
-      ]);
-
-      // Optimistically update to the new value
-      if (previousComments) {
-        queryClient.setQueryData<Comment[]>(
-          ["commentListData"],
-          [
-            {
-              ...newComment,
-              author: newComment.username,
-              comment_id: new Date().getTime(),
-              created_at: new Date().toISOString(),
-              votes: 0,
-            },
-            ...previousComments,
-          ]
-        );
-      }
-
-      return { previousComments };
-    },
-    onError: () => {
-      alert("there was an error");
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries(["commentListData"]);
-    },
-  });
-};
+import { useBaseMutate } from "../../utils/baseMutationQuery";
 
 const AddCommentWindow = ({
   hideWindowCallback,
@@ -72,7 +30,23 @@ const AddCommentWindow = ({
 
   const queryClient = useQueryClient();
   const { isFetching, ...queryInfo } = useComments(props.article_id);
-  const { isLoading, mutate } = useBaseMutate(queryClient);
+  const { mutate } = useBaseMutate<Comment, RequestComment, Comment[]>(
+    queryClient,
+    postComment,
+    ["commentListData"],
+    (newData: RequestComment, prevData: Comment[]) => {
+      return [
+        {
+          ...newData,
+          author: newData.username,
+          comment_id: new Date().getTime(),
+          created_at: new Date().toISOString(),
+          votes: 0,
+        },
+        ...prevData,
+      ];
+    }
+  );
 
   const onSubmit = ({ commentBody }: { commentBody: string }) => {
     hideWindowCallback!();
