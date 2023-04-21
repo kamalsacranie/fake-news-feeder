@@ -16,10 +16,13 @@ export type Article = {
   article_id: number;
   comment_count: string;
 };
-export async function getArticles() {
+export async function getArticles(topic?: string | null) {
+  // look into using a proper parser to make the generation of url more robust
   const {
     data: { articles },
-  } = await api.get<{ articles: Article[] }>("/articles");
+  } = await api.get<{ articles: Article[] }>(
+    `/articles?${topic ? `topic=${topic}` : ""}`
+  );
   return articles;
 }
 export async function getArticle(articleId: string) {
@@ -90,4 +93,15 @@ export async function patchArticleVotes(article_id: number, inc_votes: number) {
     inc_votes,
   });
   return article;
+}
+
+export type Topic = {
+  slug: string;
+  description: string;
+};
+export async function getTopics() {
+  const {
+    data: { topics },
+  } = await api.get<{ topics: Topic[] }>("/topics");
+  return topics;
 }
