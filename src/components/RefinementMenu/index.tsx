@@ -24,7 +24,11 @@ const RefinementMenu = () => {
         transform: `translateX(${translateX + 4}px)`,
       }}
     >
-      <SideTabs onClick={() => setOpenMenu(!openMenu)} value={0}>
+      <SideTabs
+        className="h-fit"
+        onClick={() => setOpenMenu(!openMenu)}
+        value={0}
+      >
         <SideTab value={0}>Refine</SideTab>
       </SideTabs>
       <TabBody ref={formDiv}>
