@@ -2,6 +2,14 @@ import { useQuery } from "@tanstack/react-query";
 import { Avatar, Hourglass } from "react95";
 import { getUser, User } from "../api";
 
+export const ProfilePictureSkeleton = () => {
+  return (
+    <Avatar className="mt-2" size={100}>
+      <Hourglass />
+    </Avatar>
+  );
+};
+
 export default ({ username }: { username: string }) => {
   const {
     isLoading,
@@ -13,9 +21,10 @@ export default ({ username }: { username: string }) => {
       return await getUser(username);
     },
   });
-  if (isLoading) return <Hourglass />;
   if (error) return <div>error.message</div>;
-  return (
+  return isLoading ? (
+    <ProfilePictureSkeleton />
+  ) : (
     <Avatar
       className="mt-2"
       alt={user?.name}

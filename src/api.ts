@@ -16,13 +16,20 @@ export type Article = {
   article_id: number;
   comment_count: string;
 };
-export async function getArticles(topic?: string | null) {
-  // look into using a proper parser to make the generation of url more robust
+export async function getArticles(
+  topic?: string | null,
+  sort_by?: string | null,
+  order?: string | null
+) {
   const {
     data: { articles },
-  } = await api.get<{ articles: Article[] }>(
-    `/articles?${topic ? `topic=${topic}` : ""}`
-  );
+  } = await api.get<{ articles: Article[] }>("/articles", {
+    params: {
+      topic,
+      sort_by,
+      order,
+    },
+  });
   return articles;
 }
 export async function getArticle(articleId: string) {
