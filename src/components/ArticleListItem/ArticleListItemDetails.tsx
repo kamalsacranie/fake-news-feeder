@@ -1,6 +1,6 @@
 import { GroupBox, Separator } from "react95";
 import dateformat from "dateformat";
-import { Article } from "../../api";
+import type { Article } from "../../api";
 
 export default ({ author, created_at, votes }: Partial<Article>) => {
   return (

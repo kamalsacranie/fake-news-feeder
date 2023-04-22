@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { RefObject, useState } from "react";
+import { RefObject, useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { Window, ScrollView, Frame, Hourglass } from "react95";
 import { Article, getArticle, patchArticleVotes } from "../api";
@@ -11,7 +11,6 @@ import {
 import dateformat from "dateformat";
 import CommentOverlay from "../components/CommentOverlay";
 import { WindowBar } from "../components/WindowBar";
-import VoteBox from "../components/General/VoteBox";
 import ArticleVoteBox from "../components/ArticleDetail/ArticleVoteBox";
 
 const ArticleInfoItem = ({
@@ -41,6 +40,14 @@ const ArticleInfo = ({ article }: { article: Article }) => {
 
 export default ({ screenRef }: { screenRef: RefObject<HTMLDivElement> }) => {
   if (screenRef.current) screenRef.current.style.maxHeight = "10px";
+
+  useEffect(() => {
+    return () => {
+      // remove styling on unmount
+      if (screenRef.current) screenRef.current.style.maxHeight = "";
+    };
+  }, []);
+
   const { articleId } = useParams();
   const [readerMode, setReaderMode] = useState(false);
   const [articleInfo, setArticleInfo] = useState(false);
@@ -90,7 +97,7 @@ export default ({ screenRef }: { screenRef: RefObject<HTMLDivElement> }) => {
   if (error) return <div>{error.message}</div>;
   if (!article) return <div>{error}</div>;
   return (
-    <Window className="flex flex-col flex-grow relative">
+    <Window className="flex flex-col flex-grow relative overflow-hidden">
       {showComments && (
         <CommentOverlay
           article_id={article.article_id}

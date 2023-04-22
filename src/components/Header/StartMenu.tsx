@@ -2,36 +2,52 @@ import { Link } from "react-router-dom";
 import { MenuList, MenuListItem, Separator } from "react95";
 import { UseStateSet } from "../../types";
 
-const StartMenu = ({ setOpen }: { setOpen: UseStateSet<boolean> }) => {
+const StartMenuListItem = ({
+  symbol,
+  label,
+  ariaLabel,
+  disabled,
+}: {
+  symbol: string;
+  label: string;
+  ariaLabel?: string;
+  disabled?: boolean;
+}) => {
   return (
-    <MenuList
-      className="z-50 absolute left-0 top-full"
-      onClick={() => setOpen(false)}
-    >
-      <Link to="/articles">
-        <MenuListItem>
-          <span role="img" aria-label="👨‍💻">
-            👨‍💻
-          </span>
-          Articles
-        </MenuListItem>
-      </Link>
-      <Link to="/topics">
-        <MenuListItem>
-          <span role="img" aria-label="📁">
-            📁
-          </span>
-          Topics
-        </MenuListItem>
-      </Link>
-      <Separator />
-      <MenuListItem disabled>
-        <span role="img" aria-label="🔙">
-          🔙
-        </span>
-        Logout
-      </MenuListItem>
-    </MenuList>
+    <MenuListItem disabled={disabled}>
+      <span role="img" aria-label={ariaLabel}>
+        {symbol}
+      </span>
+      {label}
+    </MenuListItem>
+  );
+};
+
+const StartMenu = ({ setOpen }: { setOpen: UseStateSet<boolean> }) => {
+  const closeMenue = () => setOpen(false);
+
+  return (
+    <>
+      <div
+        className="fixed z-10 inset-0 w-screen h-screen"
+        onClick={closeMenue}
+      />
+      <MenuList className="z-50 absolute left-0 top-full">
+        <Link onClick={closeMenue} to="/articles">
+          <StartMenuListItem symbol="👨‍💻" label="Articles" />
+        </Link>
+        <Link onClick={closeMenue} to="/topics">
+          <StartMenuListItem symbol="📂" label="Topics" />
+        </Link>
+        <Separator />
+        <StartMenuListItem
+          disabled
+          label="Logout"
+          symbol="🔙"
+          ariaLabel="back-arrow"
+        />
+      </MenuList>
+    </>
   );
 };
 

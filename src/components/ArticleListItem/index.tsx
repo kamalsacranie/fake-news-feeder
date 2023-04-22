@@ -1,10 +1,28 @@
 import { Article } from "../../api";
-import { Button } from "react95";
+import { Button, Hourglass } from "react95";
 import { capitalCase } from "../../utils/stringManipulation";
-import ProfilePicture from "../ProfilePicture";
+import ProfilePicture, { ProfilePictureSkeleton } from "../ProfilePicture";
 import ArticleListItemDetails from "./ArticleListItemDetails";
 import { DivProps } from "../../types";
 import ListItemRedirect from "../General/ListItems/ListItemRedirect";
+
+export const ArticleListItemSkeleton = () => {
+  return (
+    <ListItemRedirect to={`/articles`} windowTitle={"Loading..."}>
+      <div className="flex my-4">
+        <div className="w-fit ml-4">
+          <ProfilePictureSkeleton />
+        </div>
+        <ArticleListItemDetails />
+      </div>
+      <div className="flex justify-end">
+        <Button>
+          <Hourglass />
+        </Button>
+      </div>
+    </ListItemRedirect>
+  );
+};
 
 const ArticleListItem = ({ article }: DivProps & { article: Article }) => {
   const storePagePosition = () =>
