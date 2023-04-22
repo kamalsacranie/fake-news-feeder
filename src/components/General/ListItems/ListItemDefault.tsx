@@ -1,4 +1,4 @@
-import { DivProps } from "../../types";
+import { DivProps } from "../../../types";
 import DefaultWindowHeader from "./DefaultWindowHeader";
 import ListItemBase from "./ListItemBase";
 

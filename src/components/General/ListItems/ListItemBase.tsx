@@ -1,6 +1,6 @@
 import React, { ReactElement, useState } from "react";
 import { Separator, Window } from "react95";
-import { DivProps } from "../../types";
+import { DivProps } from "../../../types";
 
 const ListItemBase = ({
   onClick,

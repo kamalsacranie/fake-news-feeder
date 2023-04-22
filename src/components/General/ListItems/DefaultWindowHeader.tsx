@@ -1,5 +1,5 @@
 import { WindowHeader } from "react95";
-import { DivProps } from "../../types";
+import { DivProps } from "../../../types";
 
 const DefaultWindowHeader = ({
   active,
